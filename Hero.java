@@ -18,6 +18,7 @@ public class Hero {
 	private double vecZ;
 	private HashMap<String, Ability> abilities = new HashMap<String, Ability>();
 	private ArrayList<Hero> nearHeroes = new ArrayList<Hero>();
+	private int[] options = new int[5];
 	
 	public Hero(Entity entity){
 		this.id = entity.getDtClass().getDtName();
@@ -51,8 +52,17 @@ public class Hero {
 	}
 	public void addAbility(String key, Ability a){
 		this.abilities.put(key, a);
+		if(a.getLevel()>0){
+			int[] temp = a.getCategory();
+			for(int i=0; i<temp.length;i++){
+				options[i] = options[i] | temp[i];
+			}
+		}
 	}
 	//getter
+	public int[] getOptions(){
+		return this.options;
+	}
 	public String getId(){
 		return this.id;
 	}
