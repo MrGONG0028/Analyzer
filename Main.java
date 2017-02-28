@@ -4,7 +4,6 @@ import skadistats.clarity.model.Entity;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.processor.entities.OnEntityCreated;
 import skadistats.clarity.processor.entities.OnEntityUpdated;
-import skadistats.clarity.processor.entities.UsesEntities;
 import skadistats.clarity.processor.runner.Context;
 import skadistats.clarity.processor.runner.ControllableRunner;
 import skadistats.clarity.source.MappedFileSource;
@@ -20,7 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.swing.text.AbstractDocument.Content;
+import javax.vecmath.Vector3f;
 /**
  * Created by Chen Youfu on 7/2/2017.
  */
@@ -42,7 +41,7 @@ public class Main {
     String line = "";
     String cvsSplitBy = ",";
     static int counter = 0;
-    
+   
 
     public static void main(String args[]) throws Exception{
         new Main();
@@ -132,24 +131,14 @@ public class Main {
             	double health = Double.parseDouble(entity.getProperty("m_iHealth").toString());
             	double mana = Double.parseDouble(entity.getProperty("m_flMana").toString());
             	String orientation = entity.getProperty("CBodyComponent.m_angRotation").toString();
-            	double cellX = Double.parseDouble(entity.getProperty("CBodyComponent.m_cellX").toString());
-            	double cellY = Double.parseDouble(entity.getProperty("CBodyComponent.m_cellY").toString());
-            	double cellZ = Double.parseDouble(entity.getProperty("CBodyComponent.m_cellZ").toString());
-            	double vecX = Double.parseDouble(entity.getProperty("CBodyComponent.m_vecX").toString());
-            	double vecY = Double.parseDouble(entity.getProperty("CBodyComponent.m_vecX").toString());
-            	double vecZ = Double.parseDouble(entity.getProperty("CBodyComponent.m_vecX").toString());
             	
             	//entity.getDtClass().getValueForFieldPath(fp, state);
             	//entity.getPropertyForFieldPath(changedPaths[0]);
             	Heroes.get(name).setHealth(health);
             	Heroes.get(name).setMana(mana);
             	Heroes.get(name).setOrientation(orientation);
-            	Heroes.get(name).setCellX(cellX);
-            	Heroes.get(name).setCellY(cellY);
-            	Heroes.get(name).setCellZ(cellZ);
-            	Heroes.get(name).setVecX(vecX);
-            	Heroes.get(name).setVecY(vecY);
-            	Heroes.get(name).setVecZ(vecZ);
+            	Heroes.get(name).setCordX(Hero.getX(entity));
+            	Heroes.get(name).setCordY(Hero.getY(entity));
             	
             	//update nearby heroes
             	Heroes.get(name).emptyNearHerolist();
@@ -232,20 +221,21 @@ public class Main {
                     		String fileName = "/Users/wenchengong/Desktop/battleInfo.txt";
                         	BufferedWriter bw = null;
                     		FileWriter fw = null;
+                    		int side=0;
                     		try {
         	            		
         	            		StringBuilder content = new StringBuilder();
         	            		content.append("#"+counter+ " ");
+        	            		side = (Heroes.get(key).getNearHero().get(0).getSide()-Heroes.get(key).getNearHero().get(1).getSide()>0) ? 1:0;
+        	            		content.append(side+ " ");
+        	            		
         		            	for(Hero h: Heroes.get(key).getNearHero()){
+        		            		
         	            			content.append(h.getId()+" ");
         	            			content.append(h.getHealth()+" ");
         	            			content.append(h.getMana()+" ");
-        	            			content.append(h.getCellX()+" ");
-        	            			content.append(h.getCellY()+" ");
-        	            			content.append(h.getCellZ()+" ");
-        	            			content.append(h.getVecX()+" ");
-        	            			content.append(h.getVecY()+" ");
-        	            			content.append(h.getVecZ()+" ");
+        	            			content.append(h.getCordX()+" ");
+        	            			content.append(h.getCordY()+" ");
         	            			content.append(h.getOrientation()+" ");
         	            			for(Ability a: h.getAbilities().values()){
         	            				content.append(a.getCooldown()+" ");
